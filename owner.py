@@ -6,12 +6,63 @@ status = [
     '4. Доставлен',
 ]
 
+
 def change_price():
-    pass
+    with sqlite3.connect('shop.db') as db:
+        c = db.cursor()
+        c.execute("SELECT * FROM catalog")
+        a = c.fetchall()
+
+    col_names = [description[0] for description in c.description]
+    print(*col_names, sep=' ')
+    print(*a, sep='\n')
+
+    print('Введите номер товара:')
+    inp = input()
+    if_order = False
+    for data in a:
+        if inp in str(data[0]):
+            print('Введите цену:')
+            price = input()
+            if_order = True
+    if not if_order:
+        print('Заказа с таким номером в базе нет, проверьте введенный номер и повторите попытку.')
+        return change_order_status()
+
+    with sqlite3.connect('shop.db') as db:
+        c = db.cursor()
+        c.execute(f"UPDATE catalog SET price = {price} WHERE id = {inp}")
+        db.commit()
+    choose_command()
 
 
 def change_quan():
-    pass
+    with sqlite3.connect('shop.db') as db:
+        c = db.cursor()
+        c.execute("SELECT * FROM catalog")
+        a = c.fetchall()
+
+    col_names = [description[0] for description in c.description]
+    print(*col_names, sep=' ')
+    print(*a, sep='\n')
+
+    print('Введите номер товара:')
+    inp = input()
+    if_order = False
+    for data in a:
+        if inp in str(data[0]):
+            print('Введите колличество:')
+            amount = input()
+            if_order = True
+    if not if_order:
+        print('Заказа с таким номером в базе нет, проверьте введенный номер и повторите попытку.')
+        return change_order_status()
+
+    with sqlite3.connect('shop.db') as db:
+        c = db.cursor()
+        c.execute(f"UPDATE catalog SET amount = {amount} WHERE id = {inp}")
+        db.commit()
+    choose_command()
 
 
 def non_payed_orders():
@@ -33,7 +84,7 @@ def change_order_status():
     inp = input()
     if_order = False
     for data in a:
-        if inp in data[0]:
+        if inp in str(data[0]):
             print('Чтобы установить новый номер заказа, выберите его номер в списке:')
             print(*status, sep='\n')
             st_id = input()
@@ -54,6 +105,7 @@ def watch_items():
         c.execute("SELECT name, price, amount FROM catalog")
         print('Наименование, Цена, Количество')
         print(*c.fetchall(), sep='\n')
+    if __name__ == '__main__':
         choose_command()
 
 
@@ -69,10 +121,8 @@ def choose_command():
     print('\nВведите номер команды.')
     print(*commands.values(), sep='\n')
     command = input()
-    try:
-        eval(list(commands.keys())[int(command)])
-    except:
+    if int(command) in range(len(list(commands.keys()))):
+        return eval(list(commands.keys())[int(command)])
+    else:
         print('Команды с таким номером нет, поробуйте еще раз.')
         return choose_command()
-
-choose_command()

@@ -4,25 +4,6 @@ import sqlite3
 admin_log_pass = ['admin', '123']
 
 
-class Order:
-    def __init__(self, status, contains):
-        self.status = status
-        self.contains = contains
-
-    def change_status(self, status):
-        self.status = status
-
-    def show_status(self):
-        if self.status == 0:
-            return 'Created'
-        elif self.status == 1:
-            return 'Payed'
-        elif self.status == 2:
-            return 'Sent'
-        elif self.status == 3:
-            return 'Finished'
-
-
 def watch_items():
     with sqlite3.connect('shop.db') as db:
         c = db.cursor()
@@ -61,8 +42,7 @@ def autorization():
     elif inp == admin_log_pass[0]:
         print('Введите пароль:')
         if input() == admin_log_pass[1]:
-            admin = owner.Owner()
-            return main(admin)
+            return owner.choose_command()
         else:
             print('Вы ввели неверный пароль, пожалуйста повторите ввод данных.')
             return autorization()
@@ -80,8 +60,7 @@ def autorization():
                     if_login_in_file = True
                     print('Введите пароль:')
                     if input() in data[1]:
-                        user = client.Client(inp)
-                        return main(user)
+                        return client.choose_command(data[0])
                     else:
                         print('Вы ввели неверныyй пароль, пожалуйста повторите ввод данных')
                         return autorization()
@@ -92,7 +71,7 @@ def autorization():
             return autorization()
 
 
-def intro():
+def main():
     print('Добро пожаловать, вот наш каталог товаров:')
     watch_items()
     while True:
@@ -101,13 +80,5 @@ def intro():
             return autorization()
 
 
-def main(user):
-    if type(user) == type(owner.Owner()):
-        owner.choose_command()
-    else:
-        client.choose_command()
-
-
-
 if __name__ == '__main__':
-    intro()
+    main()
