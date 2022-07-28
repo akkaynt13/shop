@@ -180,4 +180,3 @@ def delete_order(order_id, user):
     return choose_command(user)
 
 
-owner.watch_items()

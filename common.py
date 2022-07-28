@@ -56,7 +56,7 @@ def autorization():
             if_login_in_file = False
 
             for data in a:
-                if inp in data[0]:
+                if inp == data[0]:
                     if_login_in_file = True
                     print('Введите пароль:')
                     if input() in data[1]:
