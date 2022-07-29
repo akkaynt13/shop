@@ -4,14 +4,6 @@ import sqlite3
 admin_log_pass = ['admin', '123']
 
 
-def watch_items():
-    with sqlite3.connect('shop.db') as db:
-        c = db.cursor()
-        c.execute("SELECT name, price, amount FROM catalog")
-        print('Наименование, Цена, Количество')
-        print(*c.fetchall(), sep='\n')
-
-
 def registration():
     with sqlite3.connect('shop.db') as db:
         c = db.cursor()
@@ -29,6 +21,7 @@ def registration():
         password = input()
         c.execute(f"INSERT INTO users VALUES('{len(a)+1}','{login}', '{password}')")
         db.commit()
+    client.choose_command(login)
 
 
 def autorization():
@@ -73,7 +66,7 @@ def autorization():
 
 def main():
     print('Добро пожаловать, вот наш каталог товаров:')
-    watch_items()
+    owner.watch_items('user')
     while True:
         print('Чтобы сделать заказ необходимо авторизоваться, чтобы авторизоваться, введите "y".')
         if input().lower() == 'y':
